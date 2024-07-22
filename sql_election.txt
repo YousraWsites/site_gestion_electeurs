@@ -1,0 +1,59 @@
+use gestionelection;
+create table Commune(ID_commune  INT PRIMARY KEY,
+                     nom_commune char(30)
+                     );
+use gestionelection;
+create table electeurs(ID_electeur INT PRIMARY KEY,
+                       num_or INT 
+                       CIN CHAR(15),
+                       Nom_electeur CHAR(30),
+                       Prenom_electeur CHAR(30),
+                       Date_naissance DATE,
+                       commune CHAR(30),
+                       Niveau_scolaire CHAR(40),
+                       Profession CHAR(40),
+                       adresse CHAR(40),
+                       FOREIGN KEY (commune) REFERENCES commune (ID_commune)
+                       ON DELETE RESTRICT
+                       ON UPDATE CASCADE );
+use gestionelection;
+ create table Ecole(ID_ecole INT PRIMARY KEY,
+                    nom_ecole CHAR(60));
+use gestionelection; create table BV(ID_vote INT PRIMARY KEY,
+                                     num_BV INT,
+                                     commune2 INT,
+                                     ecole2 INT,
+                                     FOREIGN KEY (commune2) REFERENCES Commune (ID_commune)
+                                     ON DELETE RESTRICT
+                                     ON UPDATE CASCADE,
+                                     FOREIGN KEY (ecole2) REFERENCES Ecole (ID_ecole)
+                                     ON DELETE RESTRICT
+                                     ON UPDATE CASCADE
+                                    );
+use gestionelection;
+ALTER TABLE electeurs ADD num_BV INT;
+use gestionelection;
+ALTER TABLE electeurs ADD CONSTRAINT fk_num_BV FOREIGN KEY (num_BV) REFERENCES BV (ID_vote) ON DELETE RESTRICT ON UPDATE CASCADE;
+use gestionelection;
+ALTER TABLE Ecole ADD ID_bv INT;
+ALTER TABLE Ecole ADD CONSTRAINT fk_ID_bv FOREIGN KEY (ID_bv) REFERENCES BV (ID_vote) ON DELETE RESTRICT ON UPDATE CASCADE;
+<tr><td>Numero d'ordre :</td><td><?php
+                       
+                        $connexion = mysqli_connect("localhost", "root", "");
+                        if (!$connexion) {
+                            echo "Désolé, la connexion à localhost est impossible";
+                            exit;
+                        }
+                        if (!mysqli_select_db($connexion, 'gestionelection')) {
+                            echo "Désolé, l'accès à la base de données gestionelection est impossible";
+                            exit;
+                        }$requete = "SELECT MAX(ID_electeur) AS max_id FROM electeurs ";
+                        $resultat = mysqli_query($connexion, $requete);
+                        $mx = mysqli_fetch_assoc($resultat);
+                        $maxId = $mx['max_id'];
+                        $nextId = $maxId + 1;
+
+                        echo '<input type="text" value="' . $nextId . '" size="30" name="num1" readonly>';
+                        ?></td><td>: الرقم الترتيبي </td></tr>
+
+
